@@ -1,9 +1,7 @@
 #include <unistd.h>
 
 /**
- * main - prints exactly "and that piece of art is useful\" 
- * - Dora Korpar, 2015-10-19"
- *
+ * main - prints exactly "and that piece of art is useful"
  * Return: Always 1 (Error)
  */
 int main(void)
