@@ -1,2 +1,2 @@
 #!/bin/bash
-gcc -S -masm=intel $Cfile\ -o ${CFILE%.c}.s
+gcc -S -masm=intel $Cfile && mv ${CFILE%.c}.s ${CFILE%.c}.s
