@@ -1,127 +1,102 @@
 #include "main.h"
 #include <stdlib.h>
-/**
- * _atoi - functuons same as the built in atoi
- * @s: input string
- * Return: 0 if the string has no int else
- * the digit is returned
- */
-int _atoi(char *s)
-{
-	int result, len, diglen, found, sign, hasdigit;
+#include <stdio.h>
 
-	len = 0;
-	sign = 1;
-	result = 0;
-	found = 0;
-	while (*(s + len) != '\0')
-	{
-		if (*(s + len) >= '0' && *(s + len) <= '9')
-		{
-			if (*(s + len - 1) == '-')
-			{
-				sign = -1;
-			}
-			hasdigit = 1;
-			diglen = 0;
-			found = 1;
-			while (*(s + diglen + len) >= '0' && *(s + diglen + len) <= '9')
-			{
-				if (!(result && 10))
-					result += (*(s + len + diglen) - '0');
-				else
-					result = (result * 10) + (*(s + diglen + len) - '0');
-				++diglen;
-			}
-			len += diglen;
-		}
-		if (found)
-			break;
-		++len;
-	}
-	if (!hasdigit)
-	{
-		return (0);
-	}
-	return (result * sign);
-}
+#define ERR_MSG "Error"
 
 /**
- * is_digit - checks if the input string contains only digits
- * @s: input string
- * Return: 1 if all are digits otherwise 0
+ * is_digit - checks if a string contains a non-digit char
+ * @s: string to be evaluated
+ *
+ * Return: 0 if a non-digit is found, 1 otherwise
  */
 int is_digit(char *s)
 {
-	int j = 0;
+	int i = 0;
 
-	while (s[j] != '\0')
+	while (s[i])
 	{
-		if (s[j] < '0' || s[j] > '9')
+		if (s[i] < '0' || s[i] > '9')
 			return (0);
-		j++;
+		i++;
 	}
 	return (1);
 }
 
 /**
- * exit_with_error - prints the test Error to the screen
- * Return: void
+ * _strlen - returns the length of a string
+ * @s: string to evaluate
+ *
+ * Return: the length of the string
  */
-
-void exit_with_error(void)
+int _strlen(char *s)
 {
-	int j = 0;
-	char str[] = "Error";
+	int i = 0;
 
-	while (str[j] != '\0')
+	while (s[i] != '\0')
 	{
-		_putchar(str[j]);
-		j++;
+		i++;
 	}
-	_putchar('\n');
+	return (i);
+}
+
+/**
+ * errors - handles errors for main
+ */
+void errors(void)
+{
+	printf("Error\n");
 	exit(98);
 }
-/**
- * multiplyArgs - multiples two number arguments
- * multiplication algorithm
- * @arg1: first number
- * @arg2: second number
- * Return: void
- */
-void multiplyArgs(char *arg1, char *arg2)
-{
-	int num1, num2, result, digit, dignum, j;
-	char digarr[10];
-
-	if (is_digit(arg1) && is_digit(arg2))
-	{
-		num1 =  _atoi(arg1);
-		num2 = _atoi(arg2);
-	}
-	result = num1 * num2;
-	dignum = 0;
-	while (result > 0)
-	{
-		digit = result % 10;
-		digarr[dignum] = digit + '0';
-		dignum++;
-		result /= 10;
-	}
-	for (j = dignum - 1; j >= 0; j--)
-		_putchar(digarr[j]);
-}
 
 /**
- * main - entry point to program
- * @argc: argument count
- * @argv: argument vector
- * Return: 0
+ * main - multiplies two positive numbers
+ * @argc: number of arguments
+ * @argv: array of arguments
+ *
+ * Return: always 0 (Success)
  */
 int main(int argc, char *argv[])
 {
-	if (argc != 3)
-		exit_with_error();
-	multiplyArgs(argv[1], argv[2]);
+	char *s1, *s2;
+	int len1, len2, len, i, carry, digit1, digit2, *result, a = 0;
+
+	s1 = argv[1], s2 = argv[2];
+	if (argc != 3 || !is_digit(s1) || !is_digit(s2))
+		errors();
+	len1 = _strlen(s1);
+	len2 = _strlen(s2);
+	len = len1 + len2 + 1;
+	result = malloc(sizeof(int) * len);
+	if (!result)
+		return (1);
+	for (i = 0; i <= len1 + len2; i++)
+		result[i] = 0;
+	for (len1 = len1 - 1; len1 >= 0; len1--)
+	{
+		digit1 = s1[len1] - '0';
+		carry = 0;
+		for (len2 = _strlen(s2) - 1; len2 >= 0; len2--)
+		{
+			digit2 = s2[len2] - '0';
+			carry += result[len1 + len2 + 1] + (digit1 * digit2);
+			result[len1 + len2 + 1] = carry % 10;
+			carry /= 10;
+		}
+		if (carry > 0)
+			result[len1 + len2 + 1] += carry;
+	}
+	for (i = 0; i < len - 1; i++)
+	{
+		if (result[i])
+			a = 1;
+		if (a)
+			_putchar(result[i] + '0');
+	}
+	if (!a)
+		_putchar('0');
+	_putchar('\n');
+	free(result);
 	return (0);
 }
+
