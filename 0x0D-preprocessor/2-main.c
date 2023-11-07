@@ -3,8 +3,9 @@
 /**
  * main - print name of this source file 
  *
- * return : 0
+ * return : always 0.
  */
+
 int main(void)
 {
         printf("%s\n", __FILE__);
